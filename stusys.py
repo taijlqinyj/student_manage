@@ -3,6 +3,7 @@
 # @DATE : 2024/5/20 10:09
 import os
 
+
 def menu():
     print("Student Info Management System".center(60, "="))
     print("Function Menu".center(60, "-"))
@@ -29,7 +30,7 @@ def main():
             if choice == 0:  # exist system
                 aw = input("Are you sure to exist system ? (y / n) : ")
                 if aw == "y" or aw == "Y":
-                    print("Thanks for your coming! Bye......")
+                    print("Thanks for your coming! Bye Bye......")
                     break
                 if aw == "n" or aw == "N":
                     continue
@@ -116,12 +117,14 @@ def selectStu():
                 print(format_title.format("id", "name", "english", "python", "java", "total"))
                 for stu in res:
                     total = int(stu["english"]) + int(stu["python"]) + int(stu["java"])
-                    print(format_title.format(stu["id"], stu["name"], stu["english"], stu["python"], stu["java"], total))
+                    print(
+                        format_title.format(stu["id"], stu["name"], stu["english"], stu["python"], stu["java"], total))
             else:
                 print("No student information available")
         else:
             print("No student information available")
             break
+
 
 def deleteStu():
     while True:
@@ -158,7 +161,7 @@ def deleteStu():
 
 
 def modifyStu():
-    selectStu()
+    displayStu()
     if os.path.exists("students.txt"):
         with open("students.txt", "r", encoding="utf-8") as rfile:
             stu_info = rfile.readlines()
@@ -194,7 +197,45 @@ def modifyStu():
 
 
 def sortStu():
-    pass
+    displayStu()
+    su_dict = []
+    asc_or_desc_bool = False
+    if os.path.exists("students.txt"):
+        with open("students.txt", "r", encoding="utf-8") as read:
+            readStu = read.readlines()
+        for item in readStu:
+            stuDict = dict(eval(item))
+            su_dict.append(stuDict)
+    else:
+        print("No student information available")
+
+    asc_or_desc = int(input("Please choice asc or desc (0 is asc, 1 is desc) : "))
+    if asc_or_desc == 0:
+        asc_or_desc_bool = False
+    elif asc_or_desc == 1:
+        asc_or_desc_bool = True
+    else:
+        print("Please enter right content, try again")
+        sortStu()
+    mode = int(input(
+        "Please choice sort order (1 sorted by english, 2 sorted by python, 3 sorted by java, 0 sorted by total) : "))
+    if mode == 1:
+        su_dict.sort(key=lambda x: int(x.get("english")), reverse=asc_or_desc_bool)
+    elif mode == 2:
+        su_dict.sort(key=lambda x: int(x.get("python")), reverse=asc_or_desc_bool)
+    elif mode == 3:
+        su_dict.sort(key=lambda x: int(x.get("java")), reverse=asc_or_desc_bool)
+    elif mode == 0:
+        su_dict.sort(key=lambda x: int(x.get("english") + x.get("python") + x.get("java")), reverse=asc_or_desc_bool)
+    else:
+        print("Please enter right content, try again")
+        sortStu()
+
+    format_title = "{:^6}\t{:^12}\t{:^8}\t{:^10}\t{:^10}\t{:^8}\t"
+    print(format_title.format("id", "name", "english", "python", "java", "total"))
+    for stu in su_dict:
+        total = int(stu["english"]) + int(stu["python"]) + int(stu["java"])
+        print(format_title.format(stu["id"], stu["name"], stu["english"], stu["python"], stu["java"], total))
 
 
 def countStu():
